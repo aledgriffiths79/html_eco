@@ -1,0 +1,83 @@
+{% extends 'base.html'%}
+{% block title %}
+Checkout 
+{% endblock %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block head_js %}
+<script type='text/javascript' src='https://js.stripe.com/v2/'></script>
+<script type='text/javascript'>
+    //<![CDATA[
+    Stripe.publishableKey = '{{ publishable }}';
+    //]]>
+</script>
+<script type='text/javascript' src={% static 'scripts/js/stripe.js' %}></script>
+{% endblock %}
+
+{% block content %}
+<!-- checkout area, 2 forms and confirmatory button below -->
+<section class="container cart-container">
+    <div class="items-container">
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <form role="form" method="POST" id="payment-form" action="{% url 'checkout' %}">
+                    {% csrf_token %}
+                    <legend class="title">Payment Details</legend>
+                    <div id="credit-card-errors" style="display: none;">
+                        <div id="alert-message block-message error" id="stripe-error-message"></div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        {{ order_form | crispy }}
+                    </div>
+                    <div class="form-group col-md-6">
+                        {{ payment_form | crispy }}
+                    </div>
+                    <div class="form-group col-md-12">
+                        <div class="row">
+                            <div class="col">
+                                <h3 class="title">Total</h3>
+                                <p class="price"><i class="fas fa-euro-sign"></i> {{ total }}</p>
+                            </div>
+                            <div class="col">
+                                <input class="btn btn-primary" id="submit_payment_btn" name="commit" type="submit"
+                                    value="Submit Payment"></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="ch-total-container d-none d-md-block">
+                    <div class="padding">
+                    <div class="row">
+                        <h4 class="title">Your Products:</h4>
+                    </div>
+                        {% for item in cart_items %}
+                        {% if item %}
+                        <div class="row ch-pr-row">
+                            <div class="col-6">
+                                <img src="{{MEDIA_URL}}{{item.product.image}}" alt="{{item.product.title}}"
+                                    class="cart-image">
+                            </div>
+                            <div class="col-6">
+                                <h4 class="title">{{ item.product.title }}</h4>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <p>Quantity: {{item.quantity}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+</section>
+
+<div class="container">
+
+</div>
+{% endblock %}

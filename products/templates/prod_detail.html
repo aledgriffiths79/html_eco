@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}
+{{ product.title }}
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row info-container">
+        <div class="col-12">
+            <h1 class="title"> {{ product.title }}</h1>
+        </div>
+        <div class="col-12 col-md-6 col-lg-9">
+            <img src="{{MEDIA_URL}}{{product.image}}" alt="{{product.title}}" class="detail-image">
+        </div>
+        <div class="col-12 col-md-6 col-lg-3" id="basket-section">
+            <p class="text">
+                <em>
+                    <p class="price"><i class="fas fa-euro-sign"></i> {{ product.price }}</p>
+                </em>
+                {{ product.summary }}
+            </p>
+            <form method="post" action="{% url 'add_to_cart' product.id%} " class="add-prod">
+                {% csrf_token %}
+                <div class="input-group" class="quantity">
+                    <select name="detailed_quantity" class="form-control">
+                        {% for i in i_range %}
+                        {% if i == item.quantity %}
+                        <option value="{{item.quantity}}" selected>{{item.quantity}}</option>
+                        {% else %}
+                        <option value="{{i}}">{{i}}</option>
+                        {% endif %}
+                        {% endfor%}
+                    </select>
+                    <span class="input-group-btn">
+                        <button class="btn btn-success form-margin" type="submit">Add</button>
+                    </span>
+                </div>
+            </form>
+        </div>
+        <div class="col-12 col-lg-9 desc-area">
+            <h2 class="title">More Info</h2>
+            <hr>
+            <p class="text">{{product.description}}</p>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <h4 class="text-center title">More for you</h4>
+    <div class="row">
+        {% for product in more_prods %}
+        <div class="col-xs-10 col-xs-offset-1 col-sm-offset-0 col-sm-6 col-md-4 display panel panel-default">
+            <div class="card h-100">
+                <div class="panel-body">
+                    <a href="{% url 'more info' product.id%}" class="link-unstyled">
+                        <img src="{{MEDIA_URL}}{{product.image}}" alt="{{product.title}}" class="card-img-top-mfy">
+                        <div class="card-body">
+                            <h5>{{ product.title }}</h5>
+                            <p class="product-description">{{ product.summary }}</p>
+                            <p> <i class="fas fa-euro-sign"></i> {{ product.price }}</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
